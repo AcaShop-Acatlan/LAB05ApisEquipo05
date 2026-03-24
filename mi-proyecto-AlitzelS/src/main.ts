@@ -111,6 +111,13 @@ const createNewPost = async (): Promise<void> => {
  */
 // PISTA A: Crea la interfaz 'Comment'. 
 // Recuerda que la API devuelve: postId, id, name, email y body.
+interface Comment {
+  postId: number;
+  id: number;
+  name: string;
+  email: string;
+  body: string;
+}
 
 /**
  * PASO 7: FUNCIÓN DE BÚSQUEDA DE COMENTARIOS
@@ -119,7 +126,25 @@ const createNewPost = async (): Promise<void> => {
  * 2. Recuerda que la respuesta es una LISTA (Array) de objetos Comment.
  * 3. Usa un bucle o método de array (como .forEach) para mostrar los datos.
  */
+const searchComments = async (id: number): Promise<void> => {
+  try {
+    // 1. Hacemos la petición GET usando fetch y la URL indicada
+    // (Asumimos que API_URL está definida en otra parte de tu código)
+    const response = await fetch(`${API_URL}/posts/${id}/comments`);
+
+    // Verificamos que la respuesta haya sido exitosa (un código 200 OK)
+    if (!response.ok) {
+      throw new Error(`Error HTTP: ${response.status}`);
+    }
+
+  } catch (error) {
+    // Si algo sale mal (ej. no hay internet o la URL está mal), cae aquí
+    console.error("Hubo un problema al buscar los comentarios:", error);
+  }
+};
+
 /**
+ * 
  * RETO DE LABORATORIO: Obtener recursos anidados (Comments)
  * * Instrucciones para el estudiante:
  * Sigue los pasos numerados para completar la función.
@@ -130,7 +155,7 @@ const fetchCommentsByPost = async (postId: number): Promise<void> => {
   // 1. [LOG]: Imprime en consola un mensaje avisando que vas a buscar 
   // los comentarios del 'postId' recibido. Usa estilos %c si quieres.
  if (IS_DEBUG_MODE) {
-    console.log(`%c Buscando comenatarios por post con ID: ${postId}...`, "color: cyan; font-weight: bold;");
+    console.log(`%c Buscando comentarios por post con ID: ${postId}...`, "color: cyan; font-weight: bold;");
   }
 
   try {
@@ -262,14 +287,11 @@ const runLaboratory = async () => {
   // Usamos await para que los logs salgan en orden y no se mezclen.
   await fetchSinglePost(POST_ID_TO_SEARCH); 
   await createNewPost();    
+  await fetchCommentsByPost(POST_ID_TO_SEARCH);
   //await getAutos();                
   
   console.log("%c --- EXPERIMENTO FINALIZADO ---", "background: #222; color: #bada55; padding: 5px;");
 };
-
-
-
-
 
 // Disparamos todo el proceso.
 runLaboratory();
